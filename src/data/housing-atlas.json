@@ -1,0 +1,16 @@
+[
+  {
+    "id": 37,
+    "name": "Groenhoven",
+    "lat": 52.325306,
+    "lng": 4.975417,
+    "city": "Amsterdam",
+    "architect": "Joop van Stigt",
+    "era": "1971-1980",
+    "social_org": "collective",
+    "scale": ">201",
+    "note": null,
+    "bag_id": null,
+    "description": ""
+  }
+]

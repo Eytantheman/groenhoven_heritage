@@ -1,0 +1,129 @@
+/* ── Architectural Heritage of Groenhoven — tokens & base ───────────────────────────────────────
+   See DESIGN.md. Paper sheets laid over the 3D model; ink type; one accent. */
+
+:root {
+  /* colour */
+  --ink:        #0A0A0A;
+  --paper:      #F5F4F0;
+  --white:      #FFFFFF;
+  --grey:       #8A8A85;   /* decorative / large text only (3.3:1 on paper) */
+  --grey-ink:   #5C5C57;   /* small metadata text (6:1 on paper, AA) */
+  --rule:       #D9D8D3;
+  --accent:     #FF4F00;   /* signal orange — markers, state, focus. Never body text. */
+  --paper-on-ink: rgba(245, 244, 240, 0.62);
+
+  /* type */
+  --sans: 'Inter Tight', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --fs-12: 12px; --fs-14: 14px; --fs-16: 16px; --fs-20: 20px;
+  --fs-32: 32px; --fs-56: 56px; --fs-96: 96px;
+  --fs-cap: 12px;          /* mono captions and metadata */
+
+  /* space */
+  --s-4: 4px; --s-8: 8px; --s-16: 16px; --s-24: 24px;
+  --s-40: 40px; --s-64: 64px; --s-120: 120px;
+
+  /* layout */
+  --panel-w: 440px;
+  --gutter:  16px;
+  --backdrop: #D9D8D3;     /* behind the tiles; matches the Cesium scene background */
+  --sheet-h: 55dvh;        /* phone: open project sheet */
+  --peek-h:  136px;        /* phone: collapsed project sheet */
+
+  /* motion — slow, eased, never bouncy */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --slow: 0.6s;
+  --med:  0.38s;
+  --fast: 0.18s;
+}
+
+@media (min-width: 720px) {
+  :root { --gutter: 24px; }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body, #root {
+  margin: 0; padding: 0;
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: var(--backdrop);
+}
+
+body {
+  font-family: var(--sans);
+  font-size: var(--fs-14);
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  border-radius: 0;
+  cursor: pointer;
+}
+
+img { display: block; max-width: 100%; }
+
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--ink); /* ink inner ring: the orange reads on any ground */
+}
+
+select option { background: var(--ink); color: var(--paper); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* ── Range slider (drawing height / opacity) ───────────────────────────── */
+.edit-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 16px;
+  background: transparent;
+  cursor: pointer;
+  margin: 0;
+}
+.edit-slider::-webkit-slider-runnable-track {
+  height: 1px;
+  background: var(--ink);
+}
+.edit-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 9px;
+  height: 9px;
+  margin-top: -4px;
+  background: var(--accent);
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
+}
+.edit-slider::-moz-range-track {
+  height: 1px;
+  background: var(--ink);
+}
+.edit-slider::-moz-range-thumb {
+  width: 9px;
+  height: 9px;
+  background: var(--accent);
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
+}

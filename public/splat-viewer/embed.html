@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <!--
+            Atlas embed of the SuperSplat viewer (index.js, v1.37.0). Unlike index.html it runs
+            without the viewer's own UI and animation, and talks to the atlas window (SplatOverlay
+            in src/App.tsx) through postMessage:
+              out → { source: 'splat', type: 'progress', value } | 'loaded' | 'escape' | 'error'
+              in  ← { source: 'atlas', type: 'reset' }
+            Usage: embed.html?content=<scene.sog>&settings=<settings.json>
+        -->
+        <title>3D scan</title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="./index.css" />
+        <style>
+            html, body { height: 100%; margin: 0; overflow: hidden; background: #1a1a1a; }
+        </style>
+    </head>
+    <body>
+        <script type="module">
+            import { createViewer } from './index.js';
+
+            const params = new URL(location.href).searchParams;
+            const contentUrl = params.get('content');
+            const settingsUrl = params.get('settings');
+            const post = (type, value) => parent.postMessage({ source: 'splat', type, value }, location.origin);
+
+            try {
+                const viewer = await createViewer({
+                    container: document.body,
+                    contentUrl,
+                    contents: fetch(contentUrl),
+                    settings: fetch(settingsUrl).then((r) => r.json()),
+                    ui: false,
+                    noanim: true
+                });
+
+                viewer.events.on('progress:changed', (p) => post('progress', p));
+                const onLoaded = () => post('loaded');
+                if (viewer.state.loaded) onLoaded();
+                else viewer.events.once('loaded:changed', onLoaded);
+
+                addEventListener('message', (e) => {
+                    if (e.origin !== location.origin || e.data?.source !== 'atlas') return;
+                    if (e.data.type === 'reset' && viewer.state.loaded) viewer.resetCamera();
+                });
+                addEventListener('pagehide', () => viewer.destroy());
+            } catch (err) {
+                console.error(err);
+                post('error', String(err));
+            }
+
+            // Focus lands in here once the scene is touched; let Esc still close the atlas window
+            addEventListener('keydown', (e) => { if (e.key === 'Escape') post('escape'); });
+        </script>
+    </body>
+</html>
